@@ -164,7 +164,7 @@ app.get(`/update-a-db-record`, (req, res) => {
  *http://localhost:3000/update-a-db-record/
  */
 app.post(`/update-a-db-record`, (req, res) => {
-    const { name, password } = req.body; // Assuming 'name' is the identifier and 'password' is the field to update
+    const { name, password } = req.body;
 
     if (!name || !password) {
         console.log(`Missing required fields: name or password.`);
@@ -194,4 +194,28 @@ app.get(`/delete-a-db-record`, (req, res) => {
         res.render(`delete-a-record-in-database.njk`,
             {mongoDBArray: arrayObject});
     });
+});
+/*This router handles POST request
+ *http://localhost:3000/delete-a-db-record/
+ */
+app.post(`/delete-a-db-record`, (req, res) => {
+  const { name } = req.body; // Assuming 'name' is the identifier of the record to delete
+
+  if (!name) {
+      console.log(`Missing 'name' field.`);
+      return res.redirect(`/delete-a-db-record`);
+  }
+
+  db.collection(dbCollection).deleteOne(
+      { name: name }, // Filter by name
+      (err) => {
+          if (err) {
+              console.log(err);
+          } else {
+              console.log(`Deleted User ${name} successfully.`);
+          }
+
+          res.redirect(`/delete-a-db-record`);
+      }
+  );
 });
