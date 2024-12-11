@@ -160,7 +160,31 @@ app.get(`/update-a-db-record`, (req, res) => {
         }
     });
 });
+/*This router handles POST request
+ *http://localhost:3000/update-a-db-record/
+ */
+app.post(`/update-a-db-record`, (req, res) => {
+    const { name, password } = req.body; // Assuming 'name' is the identifier and 'password' is the field to update
 
+    if (!name || !password) {
+        console.log(`Missing required fields: name or password.`);
+        return res.redirect(`/update-a-db-record`);
+    }
+
+    db.collection(dbCollection).updateOne(
+        { name: name }, // Filter by name
+        { $set: { password: password } }, // Set the new password
+        (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`Updated User ${name}'s password successfully.`);
+            }
+
+            res.redirect(`/update-a-db-record`);
+        }
+    );
+});
 /*
  * This router handles GET requests to
  * http://localhost:3000/delete-a-db-record/
